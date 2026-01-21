@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Animal extends Model
 {
+    protected $fillable = ['user_id', 'specie', 'breed'];
+
     use HasFactory;
 
     public function user(): BelongsTo {
