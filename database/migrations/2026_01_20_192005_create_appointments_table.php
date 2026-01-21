@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('appoitments', function (Blueprint $table) {
+        Schema::create('appointments', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('user_id')->nullable(false);
             $table->unsignedInteger('animal_id')->nullable(false);

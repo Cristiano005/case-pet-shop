@@ -47,11 +47,11 @@ class User extends Authenticatable
         ];
     }
 
-    public function animals(): HasMany {
+    public function animal(): HasMany {
         return $this->hasMany(Animal::class);
     }
 
-    public function appoitment(): HasMany {
-        return $this->hasMany(Appoitment::class);
+    public function appointment(): HasMany {
+        return $this->hasMany(Appointment::class);
     }
 }
