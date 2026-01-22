@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Appointment extends Model
 {
+    protected $fillable = ['user_id', 'animal_id', 'appointment_date', 'status'];
+
     use HasFactory;
 
     public function user(): BelongsTo {
