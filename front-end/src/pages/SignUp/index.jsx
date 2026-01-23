@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axiosInstance from '../../services/api';
+import Swal from 'sweetalert2';
 
 function SignUp() {
 
@@ -20,9 +21,15 @@ function SignUp() {
             });
 
             if (data.status) {
+
                 setUserData({
                     ...userData,
                     name: '', email: '', password: '',
+                });
+
+                Swal.fire({
+                    icon: "success",
+                    title: "Sign up successful!",
                 });
             }
         }

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axiosInstance from "../../services/api";
+import Swal from 'sweetalert2';
 
 function Animals() {
 
@@ -20,9 +21,15 @@ function Animals() {
             });
 
             if (data.status) {
+
                 setAnimalData({
                     ...animalData,
                     user_id: '', specie: '', breed: '',
+                });
+
+                Swal.fire({
+                    icon: "success",
+                    title: "Pet added successfully!",
                 });
             }
         }
