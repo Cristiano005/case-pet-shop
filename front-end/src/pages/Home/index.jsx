@@ -4,6 +4,7 @@ function Home() {
   return (
     <>
       <NavLink to="/signup">All Concerts</NavLink>
+      <NavLink to="/animals/new">Register an Animal</NavLink>
     </>
   )
 }
