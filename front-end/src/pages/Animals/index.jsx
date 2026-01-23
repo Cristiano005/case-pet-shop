@@ -1,6 +1,8 @@
-import { useState } from "react";
-import axiosInstance from "../../services/api";
+import { useState } from 'react';
+import axiosInstance from '../../services/api';
 import Swal from 'sweetalert2';
+
+import { useForm } from 'react-hook-form';
 
 function Animals() {
 
