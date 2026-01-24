@@ -6,6 +6,8 @@ import SignUp from './pages/SignUp';
 import Animals from './pages/Animals';
 import Appointments from './pages/Appointments';
 
+import './index.css';
+
 createRoot(document.getElementById('root')).render(
     <BrowserRouter>
         <Routes>
