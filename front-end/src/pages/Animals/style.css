@@ -1,0 +1,4 @@
+textarea#annotations {
+    resize: none;
+    height: 10rem;
+}
