@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Animal extends Model
 {
-    protected $fillable = ['user_id', 'specie', 'breed'];
+    protected $fillable = ['user_id', 'specie', 'breed', 'sex', 'age', 'weight', 'observations'];
 
     use HasFactory;
 
