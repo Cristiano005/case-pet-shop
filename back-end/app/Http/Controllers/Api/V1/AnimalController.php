@@ -16,9 +16,9 @@ class AnimalController extends Controller
             'specie' => ['required', 'string', 'max:100'],
             'breed' => ['required', 'string', 'max:100'],
             'sex' => ['required', 'string', Rule::in(['male', 'female'])],
-            'age' => ['required', 'decimal:3,1'],
-            'weight' => ['required', 'decimal:4,2'],
-            'observations' => ['nullable', 'string'],
+            'age' => ['required', 'numeric', 'between:0,99.9'],
+            'weight' => ['required', 'numeric', 'between:0,99.99'],
+            'annotations' => ['nullable', 'string'],
         ]);
 
         Animal::create([
@@ -28,7 +28,7 @@ class AnimalController extends Controller
             'sex' => $validated['sex'],
             'age' => $validated['age'],
             'weight' => $validated['weight'],
-            'observations' => $validated['observations'],
+            'observations' => $validated['annotations'],
         ]);
 
         return response()->json([

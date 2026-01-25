@@ -144,7 +144,7 @@ function Animals() {
                     <div className="col-2 justify-item-end ms-auto">
                         <button type="submit" className="d-flex align-items-center justify-content-center gap-2 btn btn-warning fw-bold w-100 p-2">
                             Save Pet
-                            <i class="bi bi-file-earmark-medical-fill fs-6"></i>
+                            <i className="bi bi-file-earmark-medical-fill fs-6"></i>
                         </button>
                     </div >
                 </div>
