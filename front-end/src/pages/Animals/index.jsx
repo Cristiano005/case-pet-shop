@@ -43,7 +43,8 @@ function Animals() {
         try {
 
             const { data } = await axiosInstance.post('/api/v1/animals', {
-                user_id: 101,
+                user_id: 100,
+                name: petData.name,
                 specie: petData.specie,
                 breed: petData.breed,
                 sex: petData.sex,
@@ -117,12 +118,13 @@ function Animals() {
                                 {errors.age?.message}
                             </div>
                         </label>
-                        <input type="number" step="0.1" min="0" max="100" className={`form-control p-3 ${errors.age?.message ? 'is-invalid' : ''}`} id="age" placeholder="Years and/or months" {...register("age")} />
-
+                        <input type="number" step="0.1" min="0" max="100" className={`form-control p-3 ${errors.age?.message ? 'is-invalid' : ''}`} id="age"
+                            placeholder="Years and/or months" {...register("age")} />
                     </div >
                     <div className="col-4 has-validation">
                         <label htmlFor="weight" className="form-label">Weight*</label>
-                        <input type="number" step="0.01" min="0" max="100" className={`form-control p-3 ${errors.weight?.message ? 'is-invalid' : ''}`} id="weight" placeholder="0.00 Kg" {...register("weight")} />
+                        <input type="number" step="0.01" min="0" max="100" className={`form-control p-3 ${errors.weight?.message ? 'is-invalid' : ''}`}
+                            id="weight" placeholder="0.00 Kg" {...register("weight")} />
                         <div className={errors.weight?.message ? 'invalid-feedback' : ''}>
                             {errors.weight?.message}
                         </div>
@@ -133,7 +135,8 @@ function Animals() {
                 <div className="row col-12">
                     <div className="col-12 has-validation">
                         <label htmlFor="annotations" className="form-label">Annotations (optional)</label>
-                        <textarea className={`form-control p-3 ${errors.annotations?.message ? 'is-invalid' : ''}`} id="annotations" placeholder="Any observation?" {...register("annotations")}></textarea>
+                        <textarea className={`form-control p-3 ${errors.annotations?.message ? 'is-invalid' : ''}`} id="annotations"
+                            placeholder="Any observation?" {...register("annotations")}></textarea>
                         <div className={errors.annotations?.message ? 'invalid-feedback' : ''}>
                             {errors.annotations?.message}
                         </div>
@@ -148,9 +151,7 @@ function Animals() {
                         </button>
                     </div >
                 </div>
-
             </form >
-
         </div>
     )
 

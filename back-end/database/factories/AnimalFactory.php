@@ -19,8 +19,13 @@ class AnimalFactory extends Factory
     {
         return [
             'user_id' => $this->faker->randomElement(User::pluck('id')),
+            'name' => $this->faker->name(),
             'specie' => $this->faker->randomElement($this->animals),
             'breed' => $this->faker->randomElement($this->breeds),
+            'sex' => $this->faker->randomElement(['male', 'female']),
+            'age' => $this->faker->randomFloat(1, 0, 15),
+            'weight' => $this->faker->randomFloat(2, 0, 30),
+            'observations' => $this->faker->text(250),
         ];
     }
 }
