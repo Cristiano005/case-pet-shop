@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 
 function Appointments() {
 
+    const [ownAnimals, setOwnAnimals] = useState([]);
     const [services, setServices] = useState([]);
 
     const schema = yup
@@ -34,6 +35,21 @@ function Appointments() {
             annotations: "",
         }
     });
+
+
+    async function getOwnAnimals() {
+
+        try {
+            const { data } = await axiosInstance.get(`/api/v1/animals/user/${100}`);
+            setOwnAnimals(data.data);
+            console.log(data);
+        }
+
+        catch (error) {
+            console.log(error);
+        }
+
+    }
 
     async function getAllServices() {
 
@@ -78,6 +94,7 @@ function Appointments() {
     }
 
     useEffect(() => {
+        getOwnAnimals();
         getAllServices();
     }, []);
 
@@ -95,6 +112,7 @@ function Appointments() {
                         <select className={`form-control p-3 ${errors.animal_id?.message ? 'is-invalid' : ''}`} id="pet"
                             placeholder="Enter your animal" {...register("animal_id")} >
                             <option value=""> Select an pet </option>
+                            { ownAnimals.map(myAnimal => <option value={myAnimal.id} key={myAnimal.id}> {myAnimal.name} </option> ) }
                         </select>
                         <div className={errors.animal_id?.message ? 'invalid-feedback' : ''}>
                             {errors.animal_id?.message}
@@ -140,7 +158,7 @@ function Appointments() {
                 </div>
 
                 <div className="row col-12">
-                    <div className="col-2 justify-item-end ms-auto">
+                    <div className="col-auto justify-item-end ms-auto">
                         <button type="submit" className="d-flex align-items-center justify-content-center gap-2 btn btn-warning fw-bold w-100 p-2">
                             Schedule
                             <i className="bi bi-file-earmark-medical-fill fs-6"></i>
