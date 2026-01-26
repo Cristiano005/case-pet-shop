@@ -17,7 +17,7 @@ class FreeScheduleController extends Controller
     {
         $filter = $request->query('available');
 
-        if ($filter === null) {
+        if ($filter === null) { // preciso ajustar possível falha aqui!
             return response()->json([
                 "data" => FreeSchedule::all(['day', 'hour']),
                 "sucess" => true,
@@ -25,9 +25,10 @@ class FreeScheduleController extends Controller
         }
 
         $schedules = FreeSchedule::where('status', $this->comparasion[$filter])->orderBy('hour')->get()->groupBy('day');
+        $formattedSchedules = $schedules->map(fn ($dates) => $dates->pluck('hour'));
 
         return response()->json([
-            "data" => $schedules,
+            "data" => $formattedSchedules->toArray(),
             "sucess" => true,
         ], 200);
     }

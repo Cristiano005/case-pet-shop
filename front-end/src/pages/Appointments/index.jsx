@@ -9,6 +9,7 @@ function Appointments() {
 
     const [ownAnimals, setOwnAnimals] = useState([]);
     const [services, setServices] = useState([]);
+    const [freeDays, setFreeDays] = useState([]);
 
     const schema = yup
         .object({
@@ -63,6 +64,18 @@ function Appointments() {
         }
     }
 
+    async function getFreeDays() {
+
+        try {
+            const { data } = await axiosInstance.get('/api/v1/free-schedules?available=true');
+            setFreeDays(data.data);
+        }
+
+        catch (error) {
+            console.log(error);
+        }
+    }
+
     async function registerAppointment(appointmentData) {
 
         try {
@@ -96,6 +109,7 @@ function Appointments() {
     useEffect(() => {
         getOwnAnimals();
         getAllServices();
+        getFreeDays();
     }, []);
 
     return (
@@ -131,8 +145,11 @@ function Appointments() {
                     </div>
                     <div className="col-3 has-validation">
                         <label htmlFor="date" className="form-label">Date*</label>
-                        <input type="date" className={`form-control p-3 ${errors.date?.message ? 'is-invalid' : ''}`} id="date"
-                            placeholder="Enter your date" {...register("date")} />
+                        <select className={`form-control p-3 ${errors.service_id?.message ? 'is-invalid' : ''}`} id="service"
+                            placeholder="Enter your service" {...register("service_id")} >
+                            <option value=""> Select a service</option>
+                            {Object.keys(freeDays).map(day => <option value={day} key={day}> {day} </option>)}
+                        </select>
                         <div className={errors.date?.message ? 'invalid-feedback' : ''}>
                             {errors.date?.message}
                         </div>
