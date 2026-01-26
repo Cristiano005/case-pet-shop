@@ -10,13 +10,14 @@ function Appointments() {
     const [ownAnimals, setOwnAnimals] = useState([]);
     const [services, setServices] = useState([]);
     const [freeDays, setFreeDays] = useState([]);
+    const [selectedDay, setSelectedDay] = useState(null);
 
     const schema = yup
         .object({
             animal_id: yup.string().required('pet is a required field'),
             service_id: yup.string().required('service is a required field'),
-            date: yup.date().typeError("date is a required field").required(),
-            time: yup.string().required(),
+            day: yup.date().typeError("date is a required field").required(),
+            hour: yup.string().required(),
             annotations: yup.string().nullable(),
         })
         .required()
@@ -31,8 +32,8 @@ function Appointments() {
         defaultValues: {
             animal_id: "",
             service_id: "",
-            date: "",
-            time: "",
+            day: "",
+            hour: "",
             annotations: "",
         }
     });
@@ -81,12 +82,12 @@ function Appointments() {
         try {
 
             const { data } = await axiosInstance.post('/api/v1/appointments', {
-                user_id: 101,
+                user_id: 100,
                 animal_id: appointmentData.animal_id,
                 service_id: appointmentData.service_id,
                 appointment_date: appointmentData.appointment_date,
                 status: 'scheduled',
-                annotations: appointmentData.appointment_date
+                annotations: appointmentData.annotations
             });
 
             if (data.status) {
@@ -118,48 +119,71 @@ function Appointments() {
             <h2> Schedule Appointment
                 <i className="bi bi-calendar-check ms-2"></i>
             </h2>
+
             <form className="row mt-5 gap-4" onSubmit={handleSubmit(registerAppointment)}>
 
                 <div className="row col-12">
+
                     <div className="col-3 has-validation">
+
                         <label htmlFor="pet" className="form-label">Pets*</label>
+
                         <select className={`form-control p-3 ${errors.animal_id?.message ? 'is-invalid' : ''}`} id="pet"
                             placeholder="Enter your animal" {...register("animal_id")} >
                             <option value=""> Select an pet </option>
-                            { ownAnimals.map(myAnimal => <option value={myAnimal.id} key={myAnimal.id}> {myAnimal.name} </option> ) }
+                            {ownAnimals.map(myAnimal => <option value={myAnimal.id} key={myAnimal.id}> {myAnimal.name} </option>)}
                         </select>
+
                         <div className={errors.animal_id?.message ? 'invalid-feedback' : ''}>
                             {errors.animal_id?.message}
                         </div>
+
                     </div>
+
                     <div className="col-3 has-validation">
+
                         <label htmlFor="service" className="form-label">Services*</label>
+
                         <select className={`form-control p-3 ${errors.service_id?.message ? 'is-invalid' : ''}`} id="service"
                             placeholder="Enter your service" {...register("service_id")} >
                             <option value=""> Select a service</option>
                             {services.map(service => <option value={service.id} key={service.id}> {service.name} - R$ {service.price} </option>)}
                         </select>
+
                         <div className={errors.service_id?.message ? 'invalid-feedback' : ''}>
                             {errors.service_id?.message}
                         </div>
                     </div>
+
                     <div className="col-3 has-validation">
-                        <label htmlFor="date" className="form-label">Date*</label>
-                        <select className={`form-control p-3 ${errors.service_id?.message ? 'is-invalid' : ''}`} id="service"
-                            placeholder="Enter your service" {...register("service_id")} >
-                            <option value=""> Select a service</option>
-                            {Object.keys(freeDays).map(day => <option value={day} key={day}> {day} </option>)}
+
+                        <label htmlFor="day" className="form-label">Day*</label>
+
+                        <select className={`form-control p-3 ${errors.day?.message ? 'is-invalid' : ''}`} id="day"
+                            placeholder="Choose a day" {...register("day", {
+                                onChange: (e) => setSelectedDay(e.target.value)
+                            })}>
+                            <option value=""> Select a day</option>
+                            {Object.keys(freeDays).map(day => <option value={day} key={day}> 
+                                { new Date(day).toLocaleDateString('pt-BR', { weekday: "long", year: "numeric", month: "short", day: "numeric" }) } </option>)}
                         </select>
-                        <div className={errors.date?.message ? 'invalid-feedback' : ''}>
-                            {errors.date?.message}
+
+                        <div className={errors.day?.message ? 'invalid-feedback' : ''}>
+                            {errors.day?.message}
                         </div>
                     </div>
                     <div className="col-3 has-validation">
-                        <label htmlFor="time" className="form-label">Time*</label>
-                        <input type="time" className={`form-control p-3 ${errors.time?.message ? 'is-invalid' : ''}`} id="time"
-                            placeholder="Enter your appointment date" {...register("time")} />
-                        <div className={errors.time?.message ? 'invalid-feedback' : ''}>
-                            {errors.time?.message}
+
+                        <label htmlFor="hour" className="form-label">Hour*</label>
+
+                        <select disabled={!selectedDay} className={`form-control p-3 ${errors.hour?.message ? 'is-invalid' : ''}`} id="hour"
+                            placeholder="Choose an hour" {...register("hour")} >
+                            <option value=""> Select an hour</option>
+                            {freeDays[selectedDay]?.map(hour => <option value={hour} key={hour}> {hour} </option>)}
+                        </select>
+
+                        <div className={errors.hour?.message ? 'invalid-feedback' : ''}>
+                            {errors.hour?.message}
                         </div>
                     </div>
                 </div>
