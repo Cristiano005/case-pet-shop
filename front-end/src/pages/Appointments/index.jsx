@@ -27,6 +27,8 @@ function Appointments() {
         handleSubmit,
         formState: { errors },
         reset,
+        setValue,
+        trigger,
     } = useForm({
         resolver: yupResolver(schema),
         defaultValues: {
@@ -60,7 +62,7 @@ function Appointments() {
 
         try {
             const { data } = await axiosInstance.get('/api/v1/services');
-            setServices(data);
+            setServices(data.data);
         }
 
         catch (error) {
@@ -94,7 +96,7 @@ function Appointments() {
                 annotations: appointmentData.annotations
             });
 
-            if (data.status) {
+            if (data.success) {
 
                 reset();
 
@@ -169,10 +171,17 @@ function Appointments() {
 
                         <select className={`form-control p-3 ${errors.day?.message ? 'is-invalid' : ''}`} id="day"
                             placeholder="Choose a day" {...register("day", {
-                                onChange: (e) => setSelectedDay(e.target.value)
-                        })}>
+                                onChange: (e) => {
+                                    const value = e.target.value;
+                                    setSelectedDay(value);
+                                    // Se o dia mudar (ou ficar vazio), limpamos o campo de hora
+                                    setValue("hour", "");
+                                    // Opcional: limpa o erro da hora se houver um dia selecionado
+                                    if (value) trigger("hour");
+                                }
+                            })}>
                             <option value=""> Select a day</option>
-                            { Object.keys(freeDays).map(day => <option value={day} key={day}> { formattedDate(day) } </option> ) }
+                            {Object.keys(freeDays).map(day => <option value={day} key={day}> {formattedDate(day)} </option>)}
                         </select>
                         <div className={errors.day?.message ? 'invalid-feedback' : ''}>
                             {errors.day?.message}

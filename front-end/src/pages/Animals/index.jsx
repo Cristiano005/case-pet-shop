@@ -53,7 +53,7 @@ function Animals() {
                 annotations: petData.annotations
             });
 
-            if (data.status) {
+            if (data.success) {
 
                 reset();
 

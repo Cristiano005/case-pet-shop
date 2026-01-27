@@ -6,7 +6,7 @@ function Home() {
             <nav>
                 <ul>
                     <li>
-                        <NavLink to="/signup">All Concerts</NavLink>
+                        <NavLink to="/signup">Sign Up</NavLink>
                     </li>
                     <li>
                         <NavLink to="/animals/new">Register an Animal</NavLink>

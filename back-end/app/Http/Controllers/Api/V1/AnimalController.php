@@ -29,7 +29,7 @@ class AnimalController extends Controller
             'annotations' => ['nullable', 'string'],
         ]);
 
-        Animal::create([
+        $createdAnimal = Animal::create([
             'user_id' => $validated['user_id'],
             'name' => $validated['name'],
             'specie' => $validated['specie'],
@@ -41,9 +41,9 @@ class AnimalController extends Controller
         ]);
 
         return response()->json([
-            "data" => [],
-            "status" => true,
+            "data" => $createdAnimal,
+            "success" => true,
             "message" => "Pet added successfully!",
-        ], 200);
+        ], 201);
     }
 }

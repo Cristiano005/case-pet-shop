@@ -64,16 +64,16 @@ class AppointmentController extends Controller
             });
 
             return response()->json([
-                "data" => $result,
-                "status" => true,
-                "message" => "Appointment added successfully!",
+                'data' => $result,
+                'success' => true,
+                'message' => 'Appointment added successfully!',
             ], 201);
 
         } catch (Exception $error) {
             return response()->json([
-                "data" => [],
-                "status" => false,
-                "message" => $error->getMessage(),
+                'data' => [],
+                'success' => false,
+                'message' => $error->getMessage(),
             ], 500);
         }
     }
