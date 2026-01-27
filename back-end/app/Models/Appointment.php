@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Appointment extends Model
 {
-    protected $fillable = ['user_id', 'animal_id', 'appointment_date', 'status'];
+    protected $fillable = ['user_id', 'animal_id', 'service_id', 'free_schedule_id', 'status', 'price', 'observations'];
 
     use HasFactory;
 
@@ -18,5 +18,9 @@ class Appointment extends Model
 
     public function animal(): BelongsTo {
         return $this->belongsTo(Animal::class);
+    }
+
+    public function service(): BelongsTo {
+        return $this->belongsTo(Service::class);
     }
 }

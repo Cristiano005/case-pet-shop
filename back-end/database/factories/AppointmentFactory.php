@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Animal;
+use App\Models\FreeSchedule;
 use App\Models\Service;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -23,13 +24,14 @@ class AppointmentFactory extends Factory
      */
     public function definition(): array
     {
+        $freeSchedules = FreeSchedule::where('id', '<=', 10)->pluck('id');
         $chooseService = $this->faker->randomElement(Service::pluck('id'));
 
         return [
             'user_id' => $this->faker->randomElement(User::pluck('id')),
             'animal_id' => $this->faker->randomElement(Animal::pluck('id')),
             'service_id' => $chooseService,
-            'appointment_date' => $this->faker->dateTimeBetween('now', '+30 days')->format('Y-m-d'),
+            'free_schedule_id' => $this->faker->unique()->randomElement($freeSchedules),
             'status' => $this->faker->randomElement($this->status),
             'price' => Service::where('id', $chooseService)->pluck('price')[0],
         ];
