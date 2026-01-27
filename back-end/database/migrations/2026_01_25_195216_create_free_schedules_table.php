@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('free_schedules', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
             $table->date('day');
             $table->time('hour');
             $table->boolean('status')->default(true);
