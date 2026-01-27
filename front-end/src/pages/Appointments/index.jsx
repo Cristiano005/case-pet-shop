@@ -70,10 +70,10 @@ function Appointments() {
         }
     }
 
-    async function getFreeDays() {
+    async function getFreeDays(available = true) {
 
         try {
-            const { data } = await axiosInstance.get('/api/v1/free-schedules?available=true');
+            const { data } = await axiosInstance.get(`/api/v1/free-schedules?available=${available}`);
             setFreeDays(data.data);
         }
 
