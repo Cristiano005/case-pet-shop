@@ -16,7 +16,7 @@ function Appointments() {
         .object({
             animal_id: yup.string().required('pet is a required field'),
             service_id: yup.string().required('service is a required field'),
-            day: yup.date().typeError("date is a required field").required(),
+            day: yup.string().typeError("date is a required field").required(),
             hour: yup.string().required(),
             annotations: yup.string().nullable(),
         })
@@ -38,13 +38,16 @@ function Appointments() {
         }
     });
 
+    const formattedDate = (date) => {
+        const [year, month, d] = date.split('-');
+        return `${d}/${month}/${year}`;
+    };
 
     async function getOwnAnimals() {
 
         try {
             const { data } = await axiosInstance.get(`/api/v1/animals/user/${100}`);
             setOwnAnimals(data.data);
-            console.log(data);
         }
 
         catch (error) {
@@ -85,7 +88,8 @@ function Appointments() {
                 user_id: 100,
                 animal_id: appointmentData.animal_id,
                 service_id: appointmentData.service_id,
-                appointment_date: appointmentData.appointment_date,
+                day: appointmentData.day,
+                hour: appointmentData.hour,
                 status: 'scheduled',
                 annotations: appointmentData.annotations
             });
@@ -93,6 +97,10 @@ function Appointments() {
             if (data.status) {
 
                 reset();
+
+                setSelectedDay(null);
+
+                await getFreeDays();
 
                 Swal.fire({
                     icon: "success",
@@ -162,12 +170,10 @@ function Appointments() {
                         <select className={`form-control p-3 ${errors.day?.message ? 'is-invalid' : ''}`} id="day"
                             placeholder="Choose a day" {...register("day", {
                                 onChange: (e) => setSelectedDay(e.target.value)
-                            })}>
+                        })}>
                             <option value=""> Select a day</option>
-                            {Object.keys(freeDays).map(day => <option value={day} key={day}> 
-                                { new Date(day).toLocaleDateString('pt-BR', { weekday: "long", year: "numeric", month: "short", day: "numeric" }) } </option>)}
+                            { Object.keys(freeDays).map(day => <option value={day} key={day}> { formattedDate(day) } </option> ) }
                         </select>
-
                         <div className={errors.day?.message ? 'invalid-feedback' : ''}>
                             {errors.day?.message}
                         </div>

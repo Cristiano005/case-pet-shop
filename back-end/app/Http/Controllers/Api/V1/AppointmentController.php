@@ -4,82 +4,77 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Appointment;
+use App\Models\FreeSchedule;
+use App\Models\Service;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class AppointmentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    private ?FreeSchedule $freeScheduleModelInstance = null;
+
+    public function __construct()
     {
-        //
+        $this->freeScheduleModelInstance = new FreeSchedule();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
             'user_id' => ['required', 'integer', 'exists:users,id'],
             'animal_id' => ['required', 'integer', 'exists:animals,id'],
-            'appointment_date' => ['required', Rule::dateTime()],
+            'service_id' => ['required', 'integer', 'exists:services,id'],
+            'day' => ['required', 'string', Rule::dateTime()->format('Y-m-d')],
+            'hour' => ['required', 'string', Rule::dateTime()->format('H:i:s')],
             'status' => ['required', 'string', Rule::in(['scheduled', 'completed', 'canceled'])],
+            'annotations' => ['nullable', 'string'],
         ]);
 
-        Appointment::create([
-            'user_id' => $validated['user_id'],
-            'animal_id' => $validated['animal_id'],
-            'appointment_date' => $validated['appointment_date'],
-            'status' => $validated['status'],
-        ]);
+        try {
 
-        return response()->json([
-            "data" => [],
-            "status" => true,
-            "message" => "Appointment added successfully!",
-        ], 200);
-    }
+            $result = DB::transaction(function () use ($request, $validated) {
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+                $isScheduleExists = $this->freeScheduleModelInstance->where('day', $request->input('day'))
+                    ->where('hour', $request->input('hour'))
+                    ->where('status', 1)
+                    ->lockForUpdate()
+                    ->first('id');
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+                if (!$isScheduleExists) {
+                    throw new Exception("Date and hour unavailable!");
+                }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+                $newAppointment = Appointment::create([
+                    'user_id' => $validated['user_id'],
+                    'animal_id' => $validated['animal_id'],
+                    'service_id' => $validated['service_id'],
+                    'free_schedule_id' => $isScheduleExists['id'],
+                    'status' => $validated['status'],
+                    'price' => Service::find($validated['service_id'])->price,
+                    'observations' => $validated['annotations'] ?? '',
+                ]);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+                $isScheduleExists->update([
+                    'status' => 0
+                ]);
+
+                return $newAppointment;
+            });
+
+            return response()->json([
+                "data" => $result,
+                "status" => true,
+                "message" => "Appointment added successfully!",
+            ], 201);
+
+        } catch (Exception $error) {
+            return response()->json([
+                "data" => [],
+                "status" => false,
+                "message" => $error->getMessage(),
+            ], 500);
+        }
     }
 }
